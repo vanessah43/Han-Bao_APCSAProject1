@@ -2,21 +2,42 @@ import java.util.Arrays;
 
 public class Player {
     // priv instance vars
-    int chips;
-    int wager;
-    int score;
-    String name;
-    boolean rollTurn;
-    boolean out;
-    Banker bank;
-    Die die1;
-    Die die2;
-    Die die3;
+    private int wins;
+    private int losses;
+    private int chips;
+    private int wager;
+    private int score;
+    final private String name;
+    private boolean rollTurn;
+    private boolean out;
+    private Banker bank;
+    private Die die1;
+    private Die die2;
+    private Die die3;
 
     // constructor
     public Player(String name) {
         this.name = name;
         chips = 100;
+    }
+
+    // typewriter style print
+    public static void type(String output) {
+        // for (int i = 0; i < output.length(); i++) {
+        // char c = output.charAt(i);
+        // System.out.print(c);
+        // try {
+        // TimeUnit.MILLISECONDS.sleep(0);
+        // }
+        // catch (Exception e) {
+
+        // }
+        // }
+        System.out.print(output);
+    }
+
+    public static void statement(String output) {
+       // System.out.println(output);
     }
 
     // setters & getters
@@ -43,9 +64,14 @@ public class Player {
         this.wager = wager;
     }
 
+    public boolean isOut() {
+        return out;
+    }
+
     public void minusWager() {
+        statement("minusWager");
         chips -= wager;
-        wager = 0;
+        // wager = 0;
 
         // checks if player is out
         outOfChips();
@@ -53,7 +79,7 @@ public class Player {
 
     public void addWager(){
         chips += wager;
-        wager = 0;
+        // wager = 0;
     }
 
     public void accessBanker (Banker bank) {
@@ -68,37 +94,51 @@ public class Player {
 
     // public methods
     public void rollDie(){
+        statement("rollDIe");
+
+        if (out) {
+            type("You're out! Sorry!\n");
+            return;
+        }
+
         int roll1 = die1.roll();
         int roll2 = die2.roll();
         int roll3 = die3.roll();
         int[] rolls = {roll1, roll2, roll3};
         Arrays.sort(rolls);
         for (int val : rolls) {
-            System.out.print(val + " ");
+            type(val + " ");
         }
 
         // triple
         if (rolls[0] == rolls[1] && rolls[1] == rolls[2]) {
-            System.out.print("Triple! " + name + " receives " + wager + " chips from the Banker.");
+            type("Triple! " + name + " receives " + wager + " chips from the Banker.\n");
             chips += wager;
             bank.minusChips(wager);
-            wager = 0;
+            //wager = 0;
+            type(name + " now has " + chips + " chips.\n");
+
         }
 
         // 4, 5, 6
         else if (rolls[0] == 4 && rolls[1] == 5 && rolls[2] == 6) {
-            System.out.print("456! " + name + " receives " + wager + " chips from the Banker.");
+            type("456! " + name + " receives " + wager + " chips from the Banker.\n");
             chips += wager;
             bank.minusChips(wager);
-            wager = 0;
+            // wager = 0;
+            type(name + " now has " + chips + " chips.");
+
         }
 
         // 1, 2, 3
         else if (rolls[0] == 1 && rolls[1] == 2 && rolls[2] == 3) {
-            System.out.print("123! " + name + " loses " + wager + " chips to the Banker.");
+            type("123! " + name + " loses " + wager + " chips to the Banker.\n");
             chips -= wager;
             bank.addChips(wager);
-            wager = 0;
+            // wager = 0;
+            outOfChips();
+            type(name + " now has " + chips + " chips.\n");
+
         }
 
         // 2 are the same
@@ -111,33 +151,37 @@ public class Player {
                 score = rolls[1];
             }
 
-            System.out.print("Double! Player scores " + score);
+            type("Double! Player scores " + score + ".\n");
             if (score < bank.getScore()) {
-                System.out.print("Banker wins! Banker gets " + wager + " chips.");
+                type("Banker wins! Banker gets " + wager + " chips.\n");
                 chips -= wager;
                 bank.addChips(wager);
                 outOfChips();
             } else {
-                System.out.print("You win! " + name + " gets " + wager + " chips.");
+                type("You win! " + name + " gets " + wager + " chips.\n");
                 chips += wager;
                 bank.minusChips(wager);
             }
+            type(name + " now has " + chips + " chips.\n");
 
-            wager = 0;
+            // wager = 0;
         }
 
         // all different
         else {
-            System.out.println("Singles! Reroll.");
+            type("Singles! Reroll.\n");
             rollDie();
         }
+        wager = 0;
     }
 
 
     // private helpers
     private boolean outOfChips() {
-        if (chips >= 0) {
-            System.out.println(name + " has bankrupted and is out!");
+        statement("outOfCHips");
+
+        if (chips <= 0) {
+            type(name + " has bankrupted and is out!\n");
             out = true;
             return true;
         }
