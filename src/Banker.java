@@ -1,6 +1,8 @@
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class Banker {
+    // private instance methods
     private int chips;
     private int score;
 
@@ -13,28 +15,32 @@ public class Banker {
     private boolean wonRound;
 
 
+    // constructor
     public Banker() {
         chips = 1000;
     }
 
-    // typewriter style print
+    // godforsaken typewriter style print
     public static void type(String output) {
-        // for (int i = 0; i < output.length(); i++) {
-        // char c = output.charAt(i);
-        // System.out.print(c);
-        // try {
-        // TimeUnit.MILLISECONDS.sleep(0);
-        // }
-        // catch (Exception e) {
+         for (int i = 0; i < output.length(); i++) {
+         char c = output.charAt(i);
+         System.out.print(c);
+         try {
+         TimeUnit.MILLISECONDS.sleep(30);
+         }
+         catch (Exception e) {
 
-        // }
-        // }
-        System.out.print(output);
+         }
+         }
+//        System.out.print(output);
     }
 
+    // method used during testing
     public static void statement(String output) {
         // System.out.println(output);
     }
+
+    // helps banker access 3 die and players
     public void accessDie(Die die1, Die die2, Die die3) {
         statement("accessDie");
         this.die1 = die1;
@@ -49,6 +55,7 @@ public class Banker {
         player3 = p3;
     }
 
+    // getters & setters
     public boolean isWonRound() {
         return wonRound;
     }
@@ -69,6 +76,7 @@ public class Banker {
         return score;
     }
 
+    // banker rolls dice
     public void rollDie() {
         statement("rollDie");
 
@@ -118,12 +126,12 @@ public class Banker {
             type("Singles! Reroll.\n");
             rollDie();
         }
-        System.out.println();
     }
 
-    public void winRound() {
+    // procedures for banker after winning & losing a round
+    private void winRound() {
         statement("winRound");
-
+        System.out.println();
         chips += player1.getWager();
         chips += player2.getWager();
         chips += player3.getWager();
@@ -144,8 +152,9 @@ public class Banker {
         wonRound = true;
     }
 
-    public void loseRound() {
+    private void loseRound() {
         statement("loseRound");
+        System.out.println();
 
         chips -= player1.getWager();
         chips -= player2.getWager();
